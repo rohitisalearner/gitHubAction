@@ -13,14 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa 192.168.187.50 >> ~/.ssh/known_hosts
-
       - name: Deploy code
         run: |
           rsync -avz --exclude='.git*' --exclude='*.pyc' ./ rohit@192.168.187.50:/var/www/html/
-          ssh rohit@192.168.187.50 "sudo systemctl restart apache2"
+          sshpass -p "rohit" ssh rohit@192.168.187.50 "sudo systemctl restart apache2"
